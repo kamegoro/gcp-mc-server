@@ -12,7 +12,9 @@ GCP_PROJECT_NAME = os.getenv("GCP_PROJECT_NAME")
 MINECRAFT_INSTANCE_NAME = os.getenv("MINECRAFT_INSTANCE_NAME")
 MINECRAFT_INSTANCE_ZONE = os.getenv("MINECRAFT_INSTANCE_ZONE")
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 compute = build("compute", "v1")
 
 
@@ -47,7 +49,8 @@ def server_status():
         )
         .execute()
     )
-    return [res["status"], res["networkInterfaces"][0]["accessConfigs"][0]["natIP"]]
+    nat_ip = res["networkInterfaces"][0]["accessConfigs"][0]["natIP"]
+    return [res["status"], nat_ip]
 
 
 @client.event
